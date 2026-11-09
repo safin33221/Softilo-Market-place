@@ -133,47 +133,9 @@ export async function onboardTenant(payload: OnboardTenantPayload): Promise<Onbo
       };
     }
 
-    if (data?.message) {
-      return {
-        success: false,
-        message: data.message,
-      };
-    }
-
-    // Dev fallback if backend is offline or starting up
-    const mockTenant = {
-      id: `tenant-${payload.slug}`,
-      name: payload.name,
-      slug: payload.slug,
-      customDomain: payload.customDomain || null,
-      phone: payload.phone || "01712345678",
-      logoUrl: payload.logoUrl || null,
-      bannerUrl: payload.bannerUrl || null,
-      commissionRate: "5.00",
-      trustScore: 100,
-      isVerified: true,
-      isActive: true,
-      createdAt: new Date().toISOString(),
-    };
-
-    const mockUser = {
-      id: `user-${Date.now()}`,
-      phone: payload.phone || "01712345678",
-      role: "SELLER_OWNER",
-      tenantId: mockTenant.id,
-      name: payload.name,
-    };
-
-    await setCookie("userSession", JSON.stringify(mockUser), {
-      ...getDefaultCookieOptions({ httpOnly: false }),
-      maxAge: 7 * 24 * 60 * 60,
-    });
-
     return {
-      success: true,
-      message: "সেলার অনবোর্ডিং সফল হয়েছে (লোকাল ডেভ মোড)",
-      tenant: mockTenant,
-      user: mockUser,
+      success: false,
+      message: data?.message || "দোকান তৈরিতে সমস্যা হয়েছে। সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি।",
     };
   } catch (error) {
     return {
