@@ -1,29 +1,30 @@
-'use client';
+import React from "react";
+import { redirect } from "next/navigation";
+import { getMe } from "@/services/auth/getMe";
+import { SellerSidebar } from "@/components/seller/SellerSidebar";
 
 export const dynamic = "force-dynamic";
 
-import React, { useState, useEffect } from "react";
-import { SellerSidebar } from "@/components/seller/SellerSidebar";
-
-
-export default function DashboardLayout({
+/**
+ * Server-Side Dashboard Layout Guard
+ * Provides airtight defense: if accessToken is removed, expired, or user has no store,
+ * execution redirects immediately on the server before rendering any HTML.
+ */
+export default async function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const [isReady, setIsReady] = useState(false);
+    const user = await getMe();
 
-    useEffect(() => {
-        setIsReady(true);
-    }, []);
+    // 1. If unauthenticated, redirect to login page
+    if (!user || !user.id) {
+        redirect("/login");
+    }
 
-
-    if (!isReady) {
-        return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin" />
-            </div>
-        );
+    // 2. If authenticated user has not created a shop yet, redirect to onboarding
+    if (!user.tenantId) {
+        redirect("/onboard");
     }
 
     return (

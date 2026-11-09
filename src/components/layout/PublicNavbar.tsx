@@ -1,12 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { siteConfig } from '@/config/site';
-import { Store, LogIn, Menu, X, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Store, LogIn, Menu, X, ArrowRight, LayoutDashboard } from 'lucide-react';
+import { getMe } from '@/services/auth/getMe';
+import { User } from '@/types/api';
 
 export function PublicNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    getMe().then((u) => {
+      if (u) setUser(u);
+    }).catch(() => {});
+  }, []);
 
   const navLinks = [
     { label: 'ফিচারসমূহ', href: '#features' },
@@ -57,20 +66,32 @@ export function PublicNavbar() {
 
           {/* Right Action Buttons */}
           <div className="hidden sm:flex items-center gap-3">
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 hover:bg-slate-50 rounded-lg transition"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>লগইন</span>
-            </Link>
-            <Link
-              href="/onboard"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm hover:shadow transition"
-            >
-              <span>দোকান খুলুন (ফ্রি)</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            {user ? (
+              <Link
+                href="/seller/dashboard"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm hover:shadow transition"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>সেলার ড্যাশবোর্ড</span>
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 hover:bg-slate-50 rounded-lg transition"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>লগইন</span>
+                </Link>
+                <Link
+                  href="/onboard"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm hover:shadow transition"
+                >
+                  <span>দোকান খুলুন (ফ্রি)</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Hamburger Button */}
@@ -101,22 +122,35 @@ export function PublicNavbar() {
             ))}
           </div>
           <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 text-center text-sm font-medium text-slate-700 border border-slate-200 rounded-lg"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>লগইন করুন</span>
-            </Link>
-            <Link
-              href="/onboard"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 text-center text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg"
-            >
-              <span>দোকান খুলুন (ফ্রি)</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            {user ? (
+              <Link
+                href="/seller/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-center gap-2 py-2.5 text-center text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>সেলার ড্যাশবোর্ড</span>
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-center text-sm font-medium text-slate-700 border border-slate-200 rounded-lg"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>লগইন করুন</span>
+                </Link>
+                <Link
+                  href="/onboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-center text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg"
+                >
+                  <span>দোকান খুলুন (ফ্রি)</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

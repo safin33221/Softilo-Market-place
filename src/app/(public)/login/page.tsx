@@ -1,10 +1,24 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
+import { getMe } from '@/services/auth/getMe';
 import { PhoneOtpForm } from '@/components/auth/PhoneOtpForm';
 import { siteConfig } from '@/config/site';
-import { Store, LogIn } from 'lucide-react';
+import { Store } from 'lucide-react';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export const dynamic = "force-dynamic";
+
+export default async function LoginPage() {
+  // If already logged in, redirect away from login page
+  const user = await getMe();
+  if (user?.id) {
+    if (user.tenantId) {
+      redirect('/seller/dashboard');
+    } else {
+      redirect('/onboard');
+    }
+  }
+
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 bg-slate-50 flex items-center justify-center">
       <div className="max-w-md w-full space-y-6">

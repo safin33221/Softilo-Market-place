@@ -105,14 +105,14 @@ export function OnboardingForm() {
         });
 
         if (res.success) {
-          router.push('/seller/dashboard');
+          window.location.href = '/seller/dashboard';
           return;
         } else {
           setError(res.message);
         }
       } else {
-        // User not logged in: send OTP first
-        const otpRes = await sendOtp(phone);
+        // User not logged in: send OTP first with purpose: 'ONBOARD'
+        const otpRes = await sendOtp(phone, 'ONBOARD');
         if (otpRes.success) {
           if (otpRes.devOtp) {
             setDevOtpHint(otpRes.devOtp);
@@ -141,12 +141,13 @@ export function OnboardingForm() {
     setError('');
 
     try {
-      // 1. Verify OTP and authenticate as SELLER_OWNER
+      // 1. Verify OTP and authenticate as SELLER_OWNER with purpose: 'ONBOARD'
       const authRes = await verifyOtp({
         phone,
         otp,
         name: shopName,
         role: 'SELLER_OWNER',
+        purpose: 'ONBOARD',
       });
 
       if (!authRes.success) {
@@ -172,7 +173,8 @@ export function OnboardingForm() {
       });
 
       if (onboardRes.success) {
-        router.push('/seller/dashboard');
+        window.location.href = '/seller/dashboard';
+        return;
       } else {
         setError(onboardRes.message || 'দোকান তৈরি সম্পন্ন করা যায়নি।');
       }

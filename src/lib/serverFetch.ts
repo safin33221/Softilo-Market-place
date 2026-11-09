@@ -166,6 +166,18 @@ const serverFetchHelper = async (
                 return serverFetchHelper(endpoint, { ...restOptions, headers: retryHeaders }, false)
             }
         }
+
+        // Clean up invalid session if unauthorized
+        if (response.status === 401) {
+            try {
+                const { deleteCookies } = await import("@/services/auth/tokenHandler");
+                await deleteCookies("accessToken");
+                await deleteCookies("userSession");
+            } catch {
+                // In non-mutable contexts (e.g. static render), cookies cannot be mutated
+            }
+        }
+
         return response
     } catch (error) {
         console.error("Server fetch network error:", error)

@@ -11,6 +11,7 @@ export interface VerifyOtpPayload {
   otp: string;
   name?: string;
   role?: UserRole;
+  purpose?: 'SELLER_LOGIN' | 'ONBOARD' | 'CUSTOMER_LOGIN';
 }
 
 export interface VerifyOtpResult {
@@ -29,6 +30,7 @@ export async function verifyOtp(payload: VerifyOtpPayload): Promise<VerifyOtpRes
   const otp = payload.otp.trim();
   const role = payload.role || "SELLER_OWNER";
   const name = payload.name?.trim();
+  const purpose = payload.purpose || "ONBOARD";
 
   if (!phone || phone.length !== 11) {
     return {
@@ -52,6 +54,7 @@ export async function verifyOtp(payload: VerifyOtpPayload): Promise<VerifyOtpRes
         otp,
         name,
         role,
+        purpose,
       }),
     });
 

@@ -1,10 +1,20 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
+import { getMe } from '@/services/auth/getMe';
 import { OnboardingForm } from '@/components/onboard/OnboardingForm';
 import { siteConfig } from '@/config/site';
-import { Store, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
-export default function OnboardPage() {
+export const dynamic = "force-dynamic";
+
+export default async function OnboardPage() {
+  // If user is already authenticated AND already has an active shop, redirect to dashboard
+  const user = await getMe();
+  if (user?.id && user?.tenantId) {
+    redirect('/seller/dashboard');
+  }
+
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 flex items-center justify-center">
       <div className="max-w-xl w-full space-y-6">

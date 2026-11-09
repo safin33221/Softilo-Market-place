@@ -100,7 +100,15 @@ export async function onboardTenant(payload: OnboardTenantPayload): Promise<Onbo
     }
 
     if (res.ok && (data?.success || data?.tenant)) {
-      // Update session cookie with newly linked tenantId and SELLER_OWNER role
+      // 1. Update accessToken cookie with refreshed token containing the newly linked tenantId!
+      if (data.accessToken) {
+        await setCookie("accessToken", data.accessToken, {
+          ...getDefaultCookieOptions(),
+          maxAge: 7 * 24 * 60 * 60,
+        });
+      }
+
+      // 2. Update session cookie with newly linked tenantId and SELLER_OWNER role
       if (data.user) {
         await setCookie("userSession", JSON.stringify(data.user), {
           ...getDefaultCookieOptions({ httpOnly: false }),
