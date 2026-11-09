@@ -145,13 +145,89 @@ export async function onboardTenant(payload: OnboardTenantPayload): Promise<Onbo
   }
 }
 
-export async function getTenantProfile() {
+export interface UpdateTenantPayload {
+  name?: string;
+  customDomain?: string;
+  logoUrl?: string;
+  bannerUrl?: string;
+}
+
+export interface TenantProfileData {
+  id: string;
+  name: string;
+  slug: string;
+  customDomain?: string | null;
+  phone: string;
+  logoUrl?: string | null;
+  bannerUrl?: string | null;
+  commissionRate: string | number;
+  trustScore: number;
+  isVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+  wallet?: {
+    id: string;
+    tenantId: string;
+    pendingBalance: string | number;
+    availableBalance: string | number;
+    totalEarned: string | number;
+  };
+  _count?: {
+    products: number;
+    orders: number;
+  };
+}
+
+export async function getTenantProfile(): Promise<{ success: boolean; tenant?: TenantProfileData; message?: string }> {
   try {
     const res = await serverFetch.get("/api/v1/tenant/me");
-    if (!res.ok) return null;
-    return await res.json();
+    const data = await res.json().catch(() => null);
+    if (res.ok && data) {
+      return {
+        success: true,
+        tenant: data.tenant || data,
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || "শপ প্রোফাইল লোড করা সম্ভব হয়নি",
+    };
   } catch (error) {
-    return null;
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "শপ প্রোফাইল লোড করতে ব্যর্থ হয়েছে",
+    };
+  }
+}
+
+export async function updateTenantProfile(
+  payload: UpdateTenantPayload
+): Promise<{ success: boolean; tenant?: TenantProfileData; message: string }> {
+  try {
+    const res = await serverFetch.patch("/api/v1/tenant/me", {
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => null);
+
+    if (res.ok && data) {
+      return {
+        success: true,
+        tenant: data.tenant || data,
+        message: data.message || "শপ প্রোফাইল সফলভাবে আপডেট হয়েছে",
+      };
+    }
+
+    return {
+      success: false,
+      message: data?.message || "প্রোফাইল আপডেট করতে সমস্যা হয়েছে",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "প্রোফাইল আপডেট করতে ব্যর্থ হয়েছে",
+    };
   }
 }
 

@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   ShieldCheck,
+  Settings,
 } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import { logout, getMe } from '@/services/auth';
@@ -58,6 +59,11 @@ export function SellerSidebar() {
       href: '/seller/wallet',
       icon: Wallet,
     },
+    {
+      label: 'শপ প্রোফাইল ও সেটিংস',
+      href: '/seller/profile',
+      icon: Settings,
+    },
   ];
 
   const handleLogout = async () => {
@@ -90,18 +96,24 @@ export function SellerSidebar() {
         </div>
 
         {/* Store Profile Quick Card */}
-        <div className="p-4 mx-3 my-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span className="text-xs font-bold text-emerald-950">ভেরিফাইড মার্চেন্ট শপ</span>
+        <Link
+          href="/seller/profile"
+          className="block p-4 mx-3 my-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl hover:bg-emerald-100/60 transition group cursor-pointer"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span className="text-xs font-bold text-emerald-950">ভেরিফাইড মার্চেন্ট শপ</span>
+            </div>
+            <ChevronRight className="w-3.5 h-3.5 text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
           </div>
-          <p className="text-[11px] text-slate-600 mt-0.5 truncate">
+          <p className="text-[11px] text-slate-700 font-semibold mt-1 truncate">
             {user?.name || 'মার্চেন্ট শপ'}
           </p>
           <p className="text-[10px] text-slate-400 mt-0.5 font-mono">
-            ID: {user?.tenantId || user?.id?.slice(0, 8) || 'verified'}
+            ID: #{user?.tenantId?.slice(0, 8) || user?.id?.slice(0, 8) || 'verified'}
           </p>
-        </div>
+        </Link>
 
         {/* Navigation Links */}
         <nav className="p-3 space-y-1">
