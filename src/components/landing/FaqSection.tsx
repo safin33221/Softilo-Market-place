@@ -31,16 +31,19 @@ export function FaqSection() {
   ];
 
   return (
-    <section id="faq" className="py-16 sm:py-20 bg-slate-50">
+    <section id="faq" className="py-20 sm:py-28 bg-slate-50/60 border-b border-slate-200/60">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-3 border border-emerald-200">
-            <HelpCircle className="w-3.5 h-3.5" />
+        <div className="text-center mb-14 space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200/80">
+            <HelpCircle className="w-3.5 h-3.5 text-emerald-600" />
             <span>সচরাচর জিজ্ঞাসিত প্রশ্নাবলী</span>
           </div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-snug">
             মার্চেন্টদের সাধারণ জিজ্ঞাসা
           </h2>
+          <p className="text-slate-600 text-base max-w-xl mx-auto font-normal">
+            প্ল্যাটফর্ম ব্যবহার, কমিশন হিসাব, কুরিয়ার ও পেমেন্ট উইথড্র সংক্রান্ত প্রয়োজনীয় উত্তর।
+          </p>
         </div>
 
         <div className="space-y-3">
@@ -49,22 +52,22 @@ export function FaqSection() {
             return (
               <div
                 key={idx}
-                className="bg-white border border-slate-200 rounded-xl overflow-hidden transition"
+                className="bg-white border border-slate-200/80 rounded-xl overflow-hidden hover:border-slate-300/80 shadow-2xs transition-all"
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full flex items-center justify-between p-5 text-left font-bold text-slate-900 hover:text-emerald-700 transition"
+                  className="w-full flex items-center justify-between p-5 text-left font-bold text-slate-900 hover:text-emerald-700 transition-colors"
                 >
-                  <span className="text-base">{faq.q}</span>
+                  <span className="text-base sm:text-lg">{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 shrink-0 ${
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 shrink-0 ml-4 ${
                       isOpen ? 'rotate-180 text-emerald-600' : ''
                     }`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                  <div className="px-5 pb-5 text-sm sm:text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4 font-normal">
                     {faq.a}
                   </div>
                 )}
